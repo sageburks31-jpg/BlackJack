@@ -1,8 +1,8 @@
 package com.pluralsight;
 
 public class Card {
-    private String suit;
-    private String value;
+    private final String suit;
+    private final String value;
     private boolean faceUp;
 
     public Card(String suit, String value) {
@@ -34,6 +34,13 @@ public class Card {
     public int getPointValue() {
         // TODO: this is your job (Blackjack, p. 95).
         // Until you finish it, every card is worth 0.
+        if (faceUp) {
+         return switch (value) {
+             case "A" -> 11;
+             case "K", "Q", "J" -> 10;
+             default -> Integer.parseInt(value);
+         };
+        }
         return 0;
     }
 
