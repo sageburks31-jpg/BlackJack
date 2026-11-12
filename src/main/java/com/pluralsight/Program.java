@@ -38,24 +38,35 @@ public class Program {
         print("your hand, power: " + playerList.get(userPlayerId).getValue() +
                 " | cards: " + playerList.get(userPlayerId).getCardNames());
 
-        int turnRng = random.nextInt(0,1);
-        int cpuTurn = turnRng;
-        print("coin flipped " + playerList.get(turnRng).getPlayerName() + " is going first");
+        int cpuTurn;
 
+        if (userPlayerId == 1) {cpuTurn = 0;}
+        else cpuTurn = 1;
         do {
+            print(playerList.get(cpuTurn).getPlayerName());
             runCpuHand(cpuTurn, deck);
-            turnRng = userPlayerId;
-
             print(playerList.get(userPlayerId).getPlayerName());
             runUserHand(deck);
-            turnRng -= 1;
-        } while (playerList.get(cpuTurn).isFold() == playerList.get(userPlayerId).isFold());
+        } while (!playerList.get(cpuTurn).isFold() && !playerList.get(userPlayerId).isFold());
 
-        if (playerList.get(cpuTurn).getValue() == playerList.get(userPlayerId).getValue()) {print("tie");}
-        else if (playerList.get(cpuTurn).getValue() > playerList.get(userPlayerId).getValue()) {
-            print(playerList.get(cpuTurn).getPlayerName()+ " wins");
+        if (playerList.get(cpuTurn).getValue() == playerList.get(userPlayerId).getValue()) {
+            print("tie");
+        } else if (playerList.get(cpuTurn).getValue() > playerList.get(userPlayerId).getValue()) {
+            if (playerList.get(cpuTurn).getValue() > 21){
+                print(playerList.get(cpuTurn).getPlayerName()+ " busted");
+                print(playerList.get(userPlayerId).getPlayerName()+ " wins");
+
+            } else print(playerList.get(cpuTurn).getPlayerName()+ " wins");
+
         } else if (playerList.get(cpuTurn).getValue() < playerList.get(userPlayerId).getValue()) {
-            print(playerList.get(userPlayerId).getPlayerName()+ " wins");
+            if (playerList.get(cpuTurn).getValue() > 21){
+                print(playerList.get(userPlayerId).getPlayerName()+ " busted");
+                print(playerList.get(cpuTurn).getPlayerName()+ " wins");
+
+            } else print(playerList.get(userPlayerId).getPlayerName()+ " wins");
+
+        } else if (playerList.get(cpuTurn).getValue() > 21 && playerList.get(userPlayerId).getValue() > 21) {
+            print("bust");
         }
 
         scanner.close();
@@ -76,7 +87,7 @@ public class Program {
                     print("deal");
                     playerList.get(turnRng).deal(deck.deal());
                     playerList.get(turnRng).setFold(false);
-                }
+                } else print("fold");
             }
         }
         if (!playerList.get(turnRng).isFold()) {
@@ -88,7 +99,7 @@ public class Program {
 
     private static void runUserHand(Deck deck) {
         playerList.get(userPlayerId).setFold(true);
-        print("cards in hand " + playerList.get(userPlayerId).getCardNames() + "\n" +
+        print("cards in hand: " + playerList.get(userPlayerId).getCardNames() + "\n" +
                 "enter d to deal\n" +
                 "enter f to fold");
         String answer;
