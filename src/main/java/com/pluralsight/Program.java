@@ -48,19 +48,19 @@ public class Program {
         sleep(500);
 
         do {
-            if (!playerList.get(cpuTurn).isFold() || playerList.get(cpuTurn).getValue() < 22) {
+            if (playerList.get(cpuTurn).isFold() || playerList.get(cpuTurn).getValue() < 22) {
                 print(playerList.get(cpuTurn).getPlayerName());
                 sleep(800);
                 runCpuHand(cpuTurn, deck);
             }
-            print(" ");
-            if (!playerList.get(cpuTurn).isFold() || playerList.get(cpuTurn).getValue() < 22) {
+            print(playerList.get(cpuTurn).getSuitFromCard());
+            if (playerList.get(cpuTurn).isFold() || playerList.get(cpuTurn).getValue() < 22) {
                 print(playerList.get(userPlayerId).getPlayerName());
                 sleep(800);
                 runUserHand(deck);
             }
 
-        } while ((!playerList.get(cpuTurn).isFold() && !playerList.get(userPlayerId).isFold()) || (playerList.get(cpuTurn).getValue() > 21 && playerList.get(cpuTurn).getValue() > 21));
+        } while ((playerList.get(cpuTurn).isFold() && playerList.get(userPlayerId).isFold()) || (playerList.get(cpuTurn).getValue() > 21 && playerList.get(cpuTurn).getValue() > 21));
 
         String[] winnerAndLoserList = {checkPlayerHand(playerList.get(userPlayerId).getValue()), checkPlayerHand(playerList.get(cpuTurn).getValue())};
 
@@ -121,7 +121,7 @@ public class Program {
                 playDecision = 1;
             }
         }
-        if (!playerList.get(turnRng).isFold()) {
+        if (playerList.get(turnRng).isFold()) {
             if (playDecision == 0) print(playerList.get(turnRng).getPlayerName() + " chose to hit");
             else print(playerList.get(turnRng).getPlayerName() + " chose to stay");
         } else {
@@ -150,7 +150,7 @@ public class Program {
 
         } while (!answer.equals("d") && !answer.equals("f") && !answer.equals("s"));
 
-        if (!playerList.get(userPlayerId).isFold()) {
+        if (playerList.get(userPlayerId).isFold()) {
             if (answer.equals("d")) print(playerList.get(userPlayerId).getPlayerName() + " chose to hit");
             else print(playerList.get(userPlayerId).getPlayerName() + " chose to stay");
         } else {

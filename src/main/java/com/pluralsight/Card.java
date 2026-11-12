@@ -33,7 +33,7 @@ public class Card {
         } return 0;
     }
 
-    public boolean isFaceUp() {return faceUp;}
+    //public boolean isFaceUp() {return faceUp;}
 
     public void flip() {faceUp = !faceUp;}
 }

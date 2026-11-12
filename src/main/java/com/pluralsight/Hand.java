@@ -15,7 +15,8 @@ public class Hand {
     }
     public void deal(Card card) {cards.add(card);}
 
-    public boolean isFold() {return fold;}
+    public String getSuitFromCard() {return cards.get(cards.size()-1).getSuit();}
+    public boolean isFold() {return !fold;}
     public void setFold(boolean fold) {this.fold = fold;}
 
      //public int getSize() {return cards.size();}
