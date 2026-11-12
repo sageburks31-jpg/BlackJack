@@ -1,6 +1,7 @@
 package com.pluralsight;
 
 import java.util.*;
+import static java.lang.Thread.*;
 
 public class Program {
     public static ArrayList<Hand> playerList = new ArrayList<>();
@@ -15,7 +16,7 @@ public class Program {
         else {System.out.print(text);}
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         print(" ",true);
 
         for (int i = 0; i <= 1; i++) {
@@ -34,42 +35,65 @@ public class Program {
         }
 
         print("Who is going first player 1 or 2 -> ",false);
-        userPlayerId = Integer.parseInt(scanner.nextLine().trim()) - 1;
-        print("your hand, power: " + playerList.get(userPlayerId).getValue() +
-                " | cards: " + playerList.get(userPlayerId).getCardNames());
 
         int cpuTurn;
 
         if (userPlayerId == 1) {cpuTurn = 0;}
         else cpuTurn = 1;
+
+        userPlayerId = Integer.parseInt(scanner.nextLine().trim()) - 1;
+        sleep(500);
+        displayPlayerHands(cpuTurn);
+        sleep(500);
+
         do {
             print(playerList.get(cpuTurn).getPlayerName());
+            sleep(500);
             runCpuHand(cpuTurn, deck);
+
             print(playerList.get(userPlayerId).getPlayerName());
+            sleep(500);
             runUserHand(deck);
+
         } while (!playerList.get(cpuTurn).isFold() && !playerList.get(userPlayerId).isFold());
 
-        if (playerList.get(cpuTurn).getValue() == playerList.get(userPlayerId).getValue()) {
-            print("tie");
-        } else if (playerList.get(cpuTurn).getValue() > playerList.get(userPlayerId).getValue()) {
-            if (playerList.get(cpuTurn).getValue() > 21){
-                print(playerList.get(cpuTurn).getPlayerName()+ " busted");
-                print(playerList.get(userPlayerId).getPlayerName()+ " wins");
+        String[] winnerAndLoserList = {checkPlayerHand(playerList.get(userPlayerId).getValue()), checkPlayerHand(playerList.get(cpuTurn).getValue())};
 
-            } else print(playerList.get(cpuTurn).getPlayerName()+ " wins");
+        if (winnerAndLoserList[0].equals(winnerAndLoserList[1])) {
+            if (winnerAndLoserList[0].equals("bust")) {
+                print("double bust");
+            } else {
+                if (playerList.get(userPlayerId).getValue() > playerList.get(cpuTurn).getValue()){
+                    print(playerList.get(userPlayerId).getPlayerName() + " " + winnerAndLoserList[0]);
+                    print(playerList.get(cpuTurn).getPlayerName() + " lost");
 
-        } else if (playerList.get(cpuTurn).getValue() < playerList.get(userPlayerId).getValue()) {
-            if (playerList.get(cpuTurn).getValue() > 21){
-                print(playerList.get(userPlayerId).getPlayerName()+ " busted");
-                print(playerList.get(cpuTurn).getPlayerName()+ " wins");
+                } else if (playerList.get(userPlayerId).getValue() < playerList.get(cpuTurn).getValue()) {
+                    print(playerList.get(cpuTurn).getPlayerName() + " " + winnerAndLoserList[1]);
+                    print(playerList.get(userPlayerId).getPlayerName() + " lost");
 
-            } else print(playerList.get(userPlayerId).getPlayerName()+ " wins");
-
-        } else if (playerList.get(cpuTurn).getValue() > 21 && playerList.get(userPlayerId).getValue() > 21) {
-            print("bust");
+                } else print("tie");
+            }
+        }
+        else {
+            print(playerList.get(userPlayerId).getPlayerName() + " " + winnerAndLoserList[0]);
+            print(playerList.get(cpuTurn).getPlayerName() + " " + winnerAndLoserList[1]);
         }
 
+        displayPlayerHands(cpuTurn);
         scanner.close();
+    }
+
+    private static void displayPlayerHands(int cpuTurn) {
+        print("your hand has, power: " + playerList.get(userPlayerId).getValue() +
+                " | cards: " + playerList.get(userPlayerId).getCardNames());
+        print("Cpus hand has, power: " + playerList.get(cpuTurn).getValue() +
+                " | cards: " + playerList.get(cpuTurn).getCardNames());
+    }
+
+
+    private static String checkPlayerHand(int prompt) {
+        if (prompt <= 21) return "win";
+        else return "bust";
     }
 
     private static void runCpuHand(int turnRng, Deck deck) {
@@ -101,6 +125,7 @@ public class Program {
         playerList.get(userPlayerId).setFold(true);
         print("cards in hand: " + playerList.get(userPlayerId).getCardNames() + "\n" +
                 "enter d to deal\n" +
+                "enter s to stay\n"+
                 "enter f to fold");
         String answer;
 
@@ -112,9 +137,10 @@ public class Program {
                 playerList.get(userPlayerId).deal(deck.deal());
                 playerList.get(userPlayerId).setFold(false);
 
-            } else if (!answer.equals("f")) {print("invalid command");}
+            } else if (answer.equals("s")) {playerList.get(userPlayerId).setFold(false);}
+            else if (!answer.equals("f")) {print("invalid command");}
 
-        } while (!answer.equals("d") && !answer.equals("f"));
+        } while (!answer.equals("d") && !answer.equals("f") && !answer.equals("s"));
 
         if (!playerList.get(userPlayerId).isFold()) {
             print(playerList.get(userPlayerId).getPlayerName() + " chose to hit");
