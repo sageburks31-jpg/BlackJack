@@ -13,42 +13,27 @@ public class Card {
 
     public String getSuit() {
         // only return the suit if the card is face up
-        if (faceUp) {
-            return suit;
-        } else {
-            return "#";
-        }
+        if (faceUp) {return suit;}
+        else {return "#";}
     }
 
     public String getValue() {
         // only return the value if the card is face up
-        if (faceUp) {
-            // this is the string value of the card
-            // i.e. A, K, Q, J, 10, 9 ...
-            return value;
-        } else {
-            return "#";
-        }
+        if (faceUp) {return value;}
+        else {return "#";}
     }
 
     public int getPointValue() {
-        // TODO: this is your job (Blackjack, p. 95).
-        // Until you finish it, every card is worth 0.
         if (faceUp) {
          return switch (value) {
              case "A" -> 11;
              case "K", "Q", "J" -> 10;
              default -> Integer.parseInt(value);
          };
-        }
-        return 0;
+        } return 0;
     }
 
-    public boolean isFaceUp() {
-        return faceUp;
-    }
+    public boolean isFaceUp() {return faceUp;}
 
-    public void flip() {
-        faceUp = !faceUp;
-    }
+    public void flip() {faceUp = !faceUp;}
 }

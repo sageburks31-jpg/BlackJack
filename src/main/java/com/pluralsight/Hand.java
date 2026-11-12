@@ -3,24 +3,20 @@ package com.pluralsight;
 import java.util.ArrayList;
 
 public class Hand {
-    private ArrayList<Card> cards;
+    private final String playerName;
+    private final ArrayList<Card> cards;
 
-    public Hand() {
+    public Hand(String playerName) {
         cards = new ArrayList<>();
+        this.playerName = playerName;
     }
 
-    // A Card is dealt to the Hand and the Hand is responsible
-    // to store the card
-    public void deal(Card card) {
-        cards.add(card);
-    }
+    public void deal(Card card) {cards.add(card);}
 
-    public int getSize() {
-        return cards.size();
-    }
+    public int getSize() {return cards.size();}
 
-    // The Hand uses the methods of each card to determine
-    // the value of each card - and adds up all values
+    public String getPlayerName() {return playerName;}
+
     public int getValue() {
         int value = 0;
 
@@ -28,8 +24,6 @@ public class Hand {
             card.flip(); // turn the card over to see the value
             value = value + card.getPointValue();
             card.flip(); // hide the card again
-        }
-
-        return value;
+        } return value;
     }
 }
