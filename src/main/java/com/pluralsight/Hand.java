@@ -18,7 +18,7 @@ public class Hand {
     public boolean isFold() {return fold;}
     public void setFold(boolean fold) {this.fold = fold;}
 
-    public int getSize() {return cards.size();}
+     //public int getSize() {return cards.size();}
     public int getValue() {
         int value = 0;
 

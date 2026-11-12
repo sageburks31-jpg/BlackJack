@@ -34,28 +34,33 @@ public class Program {
             print(playerList.get(i).getPlayerName() + " was dealt 2 cards");
         }
 
-        print("Who is going first player 1 or 2 -> ",false);
-
+        print("which challenger are you going to play as? player 1 or 2 -> ",false);
+        userPlayerId = Integer.parseInt(scanner.nextLine().trim()) - 1;
         int cpuTurn;
 
         if (userPlayerId == 1) {cpuTurn = 0;}
         else cpuTurn = 1;
 
-        userPlayerId = Integer.parseInt(scanner.nextLine().trim()) - 1;
         sleep(500);
+        print(playerList.get(cpuTurn).getPlayerName() + " is set as dealer");
+        sleep(1500);
         displayPlayerHands(cpuTurn);
         sleep(500);
 
         do {
-            print(playerList.get(cpuTurn).getPlayerName());
-            sleep(500);
-            runCpuHand(cpuTurn, deck);
+            if (!playerList.get(cpuTurn).isFold() || playerList.get(cpuTurn).getValue() < 22) {
+                print(playerList.get(cpuTurn).getPlayerName());
+                sleep(800);
+                runCpuHand(cpuTurn, deck);
+            }
+            print(" ");
+            if (!playerList.get(cpuTurn).isFold() || playerList.get(cpuTurn).getValue() < 22) {
+                print(playerList.get(userPlayerId).getPlayerName());
+                sleep(800);
+                runUserHand(deck);
+            }
 
-            print(playerList.get(userPlayerId).getPlayerName());
-            sleep(500);
-            runUserHand(deck);
-
-        } while (!playerList.get(cpuTurn).isFold() && !playerList.get(userPlayerId).isFold());
+        } while ((!playerList.get(cpuTurn).isFold() && !playerList.get(userPlayerId).isFold()) || (playerList.get(cpuTurn).getValue() > 21 && playerList.get(cpuTurn).getValue() > 21));
 
         String[] winnerAndLoserList = {checkPlayerHand(playerList.get(userPlayerId).getValue()), checkPlayerHand(playerList.get(cpuTurn).getValue())};
 
@@ -90,7 +95,6 @@ public class Program {
                 " | cards: " + playerList.get(cpuTurn).getCardNames());
     }
 
-
     private static String checkPlayerHand(int prompt) {
         if (prompt <= 21) return "win";
         else return "bust";
@@ -99,23 +103,27 @@ public class Program {
     private static void runCpuHand(int turnRng, Deck deck) {
         playerList.get(turnRng).setFold(true);
         int handPower = playerList.get(turnRng).getValue();
-        int playDecision = random.nextInt(0,1);
-        if (handPower < 10) {
-            print("deal");
+        int playDecision = random.nextInt(0,3);
+        if (handPower < 15) {
             playerList.get(turnRng).deal(deck.deal());
             playerList.get(turnRng).setFold(false);
         }
         else {
             if (handPower < 20) {
+
                 if (playDecision == 0) {
-                    print("deal");
                     playerList.get(turnRng).deal(deck.deal());
                     playerList.get(turnRng).setFold(false);
-                } else print("fold");
+                } else if (playDecision == 2) playerList.get(turnRng).setFold(false);
+
+            } else if (handPower == 21) {
+                playerList.get(turnRng).setFold(false);
+                playDecision = 1;
             }
         }
         if (!playerList.get(turnRng).isFold()) {
-            print(playerList.get(turnRng).getPlayerName() + " chose to hit");
+            if (playDecision == 0) print(playerList.get(turnRng).getPlayerName() + " chose to hit");
+            else print(playerList.get(turnRng).getPlayerName() + " chose to stay");
         } else {
             print(playerList.get(turnRng).getPlayerName() + " chose to fold");
         }
@@ -143,8 +151,8 @@ public class Program {
         } while (!answer.equals("d") && !answer.equals("f") && !answer.equals("s"));
 
         if (!playerList.get(userPlayerId).isFold()) {
-            print(playerList.get(userPlayerId).getPlayerName() + " chose to hit");
-
+            if (answer.equals("d")) print(playerList.get(userPlayerId).getPlayerName() + " chose to hit");
+            else print(playerList.get(userPlayerId).getPlayerName() + " chose to stay");
         } else {
             print(playerList.get(userPlayerId).getPlayerName() + " chose to fold");
         }
