@@ -27,6 +27,7 @@ public class Card {
         if (faceUp) {
          return switch (value) {
              case "A" -> 11;
+             case "A1" -> 1;
              case "K", "Q", "J" -> 10;
              default -> Integer.parseInt(value);
          };

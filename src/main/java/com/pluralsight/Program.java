@@ -43,24 +43,28 @@ public class Program {
 
         sleep(500);
         print(playerList.get(cpuTurn).getPlayerName() + " is set as dealer");
-        sleep(1500);
+        sleep(2000);
+        print("you are set as challenger " + playerList.get(userPlayerId).getPlayerName());
+        sleep(2000);
         displayPlayerHands(cpuTurn);
         sleep(500);
 
         do {
-            if (playerList.get(cpuTurn).isFold() || playerList.get(cpuTurn).getValue() < 22) {
-                print(playerList.get(cpuTurn).getPlayerName());
+            if (!playerList.get(cpuTurn).isFold() || playerList.get(cpuTurn).getValue() <= 21) {
+                print(playerList.get(cpuTurn).getPlayerName() + " turn");
                 sleep(800);
+                print("cards in hand: " + playerList.get(cpuTurn).getCardNames());
                 runCpuHand(cpuTurn, deck);
             }
             print(playerList.get(cpuTurn).getSuitFromCard());
-            if (playerList.get(cpuTurn).isFold() || playerList.get(cpuTurn).getValue() < 22) {
-                print(playerList.get(userPlayerId).getPlayerName());
+            if (!playerList.get(userPlayerId).isFold() || playerList.get(userPlayerId).getValue() <= 21) {
+                print(playerList.get(userPlayerId).getPlayerName() + " turn");
                 sleep(800);
                 runUserHand(deck);
             }
+            if (playerList.get(cpuTurn).isFold() || playerList.get(userPlayerId).isFold()) {break;}
 
-        } while ((playerList.get(cpuTurn).isFold() && playerList.get(userPlayerId).isFold()) || (playerList.get(cpuTurn).getValue() > 21 && playerList.get(cpuTurn).getValue() > 21));
+            } while ((playerList.get(cpuTurn).isFold() && playerList.get(userPlayerId).isFold()) || (playerList.get(cpuTurn).getValue() > 21 && playerList.get(cpuTurn).getValue() > 21));
 
         String[] winnerAndLoserList = {checkPlayerHand(playerList.get(userPlayerId).getValue()), checkPlayerHand(playerList.get(cpuTurn).getValue())};
 
@@ -103,30 +107,22 @@ public class Program {
     private static void runCpuHand(int turnRng, Deck deck) {
         playerList.get(turnRng).setFold(true);
         int handPower = playerList.get(turnRng).getValue();
-        int playDecision = random.nextInt(0,3);
-        if (handPower < 15) {
-            playerList.get(turnRng).deal(deck.deal());
-            playerList.get(turnRng).setFold(false);
-        }
+        int playDecision = random.nextInt(0,4);
+        if (handPower < 15) {playDecision = 0;}
         else {
             if (handPower < 20) {
 
-                if (playDecision == 0) {
-                    playerList.get(turnRng).deal(deck.deal());
-                    playerList.get(turnRng).setFold(false);
-                } else if (playDecision == 2) playerList.get(turnRng).setFold(false);
+                if (playDecision <= 1) {playerList.get(turnRng).setFold(false);}
+                else if (playDecision == 3) playerList.get(turnRng).setFold(false);
 
-            } else if (handPower == 21) {
-                playerList.get(turnRng).setFold(false);
-                playDecision = 1;
-            }
+            } else if (handPower == 21) {playerList.get(turnRng).setFold(false); playDecision = 2;}
         }
-        if (playerList.get(turnRng).isFold()) {
-            if (playDecision == 0) print(playerList.get(turnRng).getPlayerName() + " chose to hit");
-            else print(playerList.get(turnRng).getPlayerName() + " chose to stay");
-        } else {
-            print(playerList.get(turnRng).getPlayerName() + " chose to fold");
-        }
+        if (!playerList.get(turnRng).isFold()) {
+            if (playDecision <= 1) {
+                playerList.get(turnRng).deal(deck.deal());
+                print(playerList.get(turnRng).getPlayerName() + " chose to hit");
+            } else print(playerList.get(turnRng).getPlayerName() + " chose to stay");
+        } else {print(playerList.get(turnRng).getPlayerName() + " chose to fold");}
     }
 
     private static void runUserHand(Deck deck) {
@@ -141,17 +137,16 @@ public class Program {
             print("enter here -> ",false);
             answer = scanner.nextLine().toLowerCase().trim();
 
-            if (answer.equals("d")) {
-                playerList.get(userPlayerId).deal(deck.deal());
-                playerList.get(userPlayerId).setFold(false);
-
-            } else if (answer.equals("s")) {playerList.get(userPlayerId).setFold(false);}
+            if (answer.equals("d") || answer.equals("s")) {playerList.get(userPlayerId).setFold(false);}
             else if (!answer.equals("f")) {print("invalid command");}
 
         } while (!answer.equals("d") && !answer.equals("f") && !answer.equals("s"));
 
         if (playerList.get(userPlayerId).isFold()) {
-            if (answer.equals("d")) print(playerList.get(userPlayerId).getPlayerName() + " chose to hit");
+            if (answer.equals("d")) {
+                playerList.get(userPlayerId).deal(deck.deal());
+                print(playerList.get(userPlayerId).getPlayerName() + " chose to hit");
+            }
             else print(playerList.get(userPlayerId).getPlayerName() + " chose to stay");
         } else {
             print(playerList.get(userPlayerId).getPlayerName() + " chose to fold");
